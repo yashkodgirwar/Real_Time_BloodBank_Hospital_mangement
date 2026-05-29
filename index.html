@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Link</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> <!-- Include jsPDF -->
+</head>
+
+<body class="bg-gray-50 font-[Poppins]">
+    <!-- Navigation -->
+    <nav class="bg-red-600 text-white p-4 sticky top-0 z-50">
+        <div class="container mx-auto flex flex-wrap justify-between items-center">
+            <h1 class="text-2xl font-bold">BloodLink</h1>
+            <div id="navLinks" class="hidden md:flex space-x-4">
+                <button onclick="showDashboard()" class="nav-link hidden">Dashboard</button>
+                <button onclick="showServices()" class="nav-link hidden">Services</button>
+                <button onclick="showHistory()" class="nav-link hidden">History</button>
+                <button onclick="showBilling()" class="nav-link hidden">Billing</button>
+                <button onclick="logout()" class="nav-link hidden">Logout</button>
+                <button onclick="showLogin()" class="login-btn">Login</button>
+                <button onclick="showRegister()" class="register-btn bg-white text-red-600 px-4 py-2 rounded-lg hover:bg-gray-100">Register</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto p-4">
+     
+        <!-- Login Form -->
+        <div id="loginForm" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md" style="min-height: auto;">
+            <h2 class="text-2xl font-bold mb-4">Login</h2>
+            <form onsubmit="handleLogin(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Email</label>
+                    <input type="email" required class="w-full p-2 border rounded">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Password</label>
+                    <input type="password" required class="w-full p-2 border rounded">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Type</label>
+                    <select required class="w-full p-2 border rounded">
+                        <option value="hospital">Hospital</option>
+                        <option value="bloodbank">Blood Bank</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700">Login</button>
+                <p class="text-center mt-3">
+                    <a href="#" onclick="showForgot()" class="text-red-600 hover:underline">
+                        Forgot Password?
+                    </a>
+                </p>
+            </form>
+        </div>
+<div id="forgotForm" class="hidden max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-4">Forgot Password</h2>
+
+    <form onsubmit="handleForgot(event)">
+        <div class="mb-4">
+            <label class="block text-gray-700 mb-2">Enter your Email</label>
+            <input id="forgotEmail" type="email" required class="w-full p-2 border rounded">
+        </div>
+
+        <button type="submit"
+            class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700">
+            Send Reset Link
+        </button>
+    </form>
+
+    <p class="mt-3 text-center">
+        <a href="#" onclick="showLogin()" class="text-blue-600">Back to Login</a>
+    </p>
+</div>
+        <!-- Registration Form
+        <div id="registerForm" class="hidden max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold mb-4">Register</h2>
+            <form onsubmit="handleRegister(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Type</label>
+                    <select required class="w-full p-2 border rounded" id="registerType">
+                        <option value="hospital">Hospital</option>
+                        <option value="bloodbank">Blood Bank</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Name</label>
+                    <input type="text" required class="w-full p-2 border rounded">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Email</label>
+                    <input type="email" required class="w-full p-2 border rounded">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Password</label>
+                    <input type="password" required class="w-full p-2 border rounded">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Address</label>
+                    <input type="text" required class="w-full p-2 border rounded">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">License Number</label>
+                    <input type="text" required class="w-full p-2 border rounded">
+                </div>
+                <button type="submit" class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700">Register</button>
+            </form>
+        </div> -->
+        <div class="container mx-auto p-4">
+            <div id="registerForm" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4">Register</h2>
+                <form id="registerForm" onsubmit="handleRegister(event)">
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2">Type</label>
+                        <select name="type" required class="w-full p-2 border rounded" id="registerType">
+                            <option value="hospital">Hospital</option>
+                            <option value="bloodbank">Blood Bank</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2">Name</label>
+                        <input type="text" name="name" required class="w-full p-2 border rounded">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2">Email</label>
+                        <input type="email" name="email" required class="w-full p-2 border rounded">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2">Password</label>
+                        <input type="password" name="password" required class="w-full p-2 border rounded">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2">Address</label>
+                        <input type="text" name="address" required class="w-full p-2 border rounded">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2">License Number</label>
+                        <input type="text" name="licenseNumber" required class="w-full p-2 border rounded">
+                    </div>
+                    <button type="submit" class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700">Register</button>
+                </form>
+            </div>
+        </div>
+        
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="hidden">
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Blood Banks List -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold mb-4">Blood Banks</h2>
+                    <div id="bloodBanksList" class="space-y-4">
+                        <!-- Blood banks will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Hospitals List -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold mb-4">Hospitals</h2>
+                    <div id="hospitalsList" class="space-y-4">
+                        <!-- Hospitals will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blood Order Form -->
+        <div id="bloodOrderForm" class="hidden max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold mb-4">Order Blood</h2>
+            <form onsubmit="handleBloodOrder(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Blood Group</label>
+                    <select required class="w-full p-2 border rounded" id="bloodGroup">
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Units Required</label>
+                    <input type="number" required min="1" class="w-full p-2 border rounded">
+                </div>
+                <button type="submit" class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700">Check Availability</button>
+            </form>
+        </div>
+
+        <!-- Available Blood Banks -->
+        <div id="availableBloodBanks" class="hidden max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold mb-4">Available Blood Banks</h2>
+            <div id="availableBloodBanksList" class="space-y-4">
+                <!-- Available blood banks will be populated here -->
+            </div>
+        </div>
+
+        <!-- Patient Details Form -->
+        <div id="patientDetailsForm" class="hidden max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold mb-4">Patient Details</h2>
+            <form onsubmit="handlePatientDetails(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Patient Name</label>
+                    <input type="text" required class="w-full p-2 border rounded">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Age</label>
+                    <input type="number" required class="w-full p-2 border rounded">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Gender</label>
+                    <select required class="w-full p-2 border rounded">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Required Date</label>
+                    <input type="date" required class="w-full p-2 border rounded">
+                </div>
+                <button type="submit" class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700">Submit Request</button>
+            </form>
+        </div>
+
+        <!-- Services Section -->
+        <div id="services" class="hidden">
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold mb-4">Download Certificates</h2>
+                    <button onclick="showCertificateDownload()" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                        Download Certificate
+                    </button>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-2xl font-bold mb-4">Blood Campaign</h2>
+                    <button onclick="arrangeCampaign()" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                        Arrange Campaign
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Certificate Download Form -->
+        <div id="certificateDownloadForm" class="hidden max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold mb-4">Download Certificate</h2>
+            <form onsubmit="handleCertificateDownload(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Select Blood Bank</label>
+                    <select required class="w-full p-2 border rounded" id="bloodBankSelect">
+                        <option value="" disabled selected>Select a blood bank</option>
+                        <!-- Blood banks will be populated here -->
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Your Name</label>
+                    <input type="text" required class="w-full p-2 border rounded" id="certificateName">
+                </div>
+                <button type="submit" class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700">Download Certificate</button>
+            </form>
+        </div>
+
+        <!-- Campaign Arrangement Form -->
+<div id="campaignForm" class="hidden max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-4">Arrange Blood Campaign</h2>
+    <form onsubmit="handleCampaignArrangement(event)">
+        <div class="mb-4">
+            <label class="block text-gray-700 mb-2">Campaign Name</label>
+            <input type="text" required class="w-full p-2 border rounded" id="campaignName">
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 mb-2">Date</label>
+            <input type="date" required class="w-full p-2 border rounded" id="campaignDate">
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 mb-2">Location</label>
+            <input type="text" required class="w-full p-2 border rounded" id="campaignLocation">
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 mb-2">Contact Person</label>
+            <input type="text" required class="w-full p-2 border rounded" id="contactPerson">
+        </div>
+        <button type="submit" class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700">Submit Campaign</button>
+    </form>
+</div>
+       
+
+        <!-- History Section -->
+        <div id="history" class="hidden bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold mb-4">Order History</h2>
+            <div id="orderHistory" class="space-y-4">
+                <!-- Order history will be populated here -->
+            </div>
+        </div>
+
+        <!-- Billing Section -->
+        <div id="billing" class="hidden bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold mb-4">Monthly Billing</h2>
+            <div id="billingHistory" class="space-y-4">
+                <!-- Billing history will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let currentUserType = null;
+
+        // Sample data
+        let bloodBanks = [
+            { 
+                id: 1, 
+                name: "City Blood Bank", 
+                address: "123 Main St", 
+                inventory: { 
+                    "A+": 10, "A-": 5, "B+": 15, "B-": 8,
+                    "AB+": 6, "AB-": 4, "O+": 20, "O-": 12
+                }
+            },
+            { 
+                id: 2, 
+                name: "Central Blood Bank", 
+                address: "456 Oak St", 
+                inventory: {
+                    "A+": 5, "A-": 3, "B+": 8, "B-": 4,
+                    "AB+": 3, "AB-": 2, "O+": 12, "O-": 6
+                }
+            }
+            
+        ];
+
+        let hospitals = [
+            { id: 1, name: "General Hospital", address: "789 Pine St" },
+            { id: 2, name: "City Hospital", address: "321 Elm St" }
+        ];
+
+        let orders = [];
+      let bills = [];
+
+
+
+        // UI Functions
+        // function showLogin() {
+        //     hideAllSections();
+        //     document.getElementById('loginForm').classList.remove('hidden');
+        // }
+        function showLogin() {
+
+    hideAllSections();
+   // document.getElementById("forgotForm").classList.add("hidden");
+    document.getElementById("loginForm").classList.remove("hidden");
+
+}
+
+        function showRegister() {
+            hideAllSections();
+            document.getElementById('registerForm').classList.remove('hidden');
+        }
+
+        function showDashboard() {
+            hideAllSections();
+            document.getElementById('dashboard').classList.remove('hidden');
+            updateLists();
+        }
+
+        function showServices() {
+            hideAllSections();
+            document.getElementById('services').classList.remove('hidden');
+        }
+
+        function showHistory() {
+            hideAllSections();
+            document.getElementById('history').classList.remove('hidden');
+            updateOrderHistory();
+        }
+
+        function showBilling() {
+            hideAllSections();
+            document.getElementById('billing').classList.remove('hidden');
+            updateBillingHistory();
+        }
+
+        function hideAllSections() {
+            // const sections = ['loginForm', 'registerForm', 'dashboard', 'bloodOrderForm', 
+            //                 'availableBloodBanks', 'patientDetailsForm', 'services', 
+            //                 'history', 'billing'];
+            const sections = [
+'loginForm',
+"forgotForm",
+'registerForm',
+'dashboard',
+'bloodOrderForm',
+'availableBloodBanks',
+'patientDetailsForm',
+'services',
+'history',
+'billing'
+];
+            sections.forEach(section => {
+                document.getElementById(section).classList.add('hidden');
+            });
+        }
+
+        function updateNavigation() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const loginBtn = document.querySelector('.login-btn');
+            const registerBtn = document.querySelector('.register-btn');
+
+            if (currentUser) {
+                navLinks.forEach(link => link.classList.remove('hidden'));
+                loginBtn.classList.add('hidden');
+                registerBtn.classList.add('hidden');
+            } else {
+                navLinks.forEach(link => link.classList.add('hidden'));
+                loginBtn.classList.remove('hidden');
+                registerBtn.classList.remove('hidden');
+            }
+        }
+
+        // Handle Forms
+        function handleLogin(event) {
+            event.preventDefault();
+            currentUser = event.target[0].value;
+            currentUserType = event.target[2].value;
+            updateNavigation();
+            showDashboard();
+        }
+//         function showForgot() {
+
+//     //document.getElementById("loginForm").classList.add("hidden");
+//     document.getElementById("forgotForm").classList.remove("hidden");
+
+// }
+function showForgot() {
+
+    hideAllSections();   // sab section hide karega
+    document.getElementById("forgotForm").classList.remove("hidden");
+
+}
+
+// function showLogin() {
+
+//     document.getElementById("forgotForm").classList.add("hidden");
+//     document.getElementById("loginForm").classList.remove("hidden");
+
+// }
+
+async function handleForgot(event) {
+
+    event.preventDefault();
+
+    const email = document.getElementById("forgotEmail").value;
+
+    const res = await fetch("/forgot-password", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email })
+    });
+
+    const data = await res.json();
+
+    alert(data.message);
+
+}
+
+    //     function handleRegister(event) {
+    // event.preventDefault();
+    // const type = document.getElementById('registerType').value;
+    // const name = event.target[1].value; // Hospital name
+    // const address = event.target[4].value; // Hospital address
+
+//     function handleRegister(event) {
+//     event.preventDefault(); // Prevent the default form submission
+
+//     const type = document.getElementById('registerType').value;
+//     const name = event.target[1].value; // Get the name from the form
+//     const email = event.target[2].value; // Get the email from the form
+//     const password = event.target[3].value; // Get the password from the form
+//     const address = event.target[4].value; // Get the address from the form
+//     const licenseNumber = event.target[5].value; // Get the license number from the form
+
+//     // Here you would typically send the data to your server
+//     // For example, using fetch to send a POST request
+//     fetch('/register', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({
+//             type,
+//             name,
+//             email,
+//             password,
+//             address,
+//             licenseNumber
+//         }),
+//     })
+//     .then(response => {
+//         if (response.ok) {
+//             alert('Registration successful!');
+//             showLogin(); // Redirect to login after registration
+//         } else {
+//             alert('Registration failed. Please try again.');
+//         }
+//     })
+//     .catch(error => {
+//         console.error('Error:', error);
+//         alert('An error occurred. Please try again.');
+//     });
+// }
+// function handleRegister(event) {
+//     event.preventDefault();
+//     const formData = new FormData(event.target);
+//     const data = Object.fromEntries(formData.entries());
+
+//     fetch('/register', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify(data),
+//     })
+//     .then(response => {
+//         if (response.ok) {
+//             alert('Registration successful!');
+//             window.location.href = '/login'; // Redirect to login
+//         } else {
+//             response.json().then(err => alert(err.message));
+//         }
+//     })
+//     .catch(error => {
+//         console.error('Error:', error);
+//         alert('An error occurred. Please try again.');
+//     });
+// }
+// function handleRegister(event) {
+//     // event.preventDefault(); // Prevent the default form submission
+
+//     const formData = new FormData(event.target);
+//     const data = Object.fromEntries(formData.entries()); // Collect form data
+
+//     fetch('/register', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify(data), // Send data to the server
+//     })
+//     .then(response => {
+//         if (response.ok) {
+//             alert('Registration successful!'); // Success message
+//             location.reload(); // Refresh the page
+//         } else {
+//             response.json().then(err => alert(err.message)); // Show error message
+//         }
+//     })
+//     .catch(error => {
+//         console.error('Error:', error);
+//         alert('An error occurred. Please try again.'); // Handle network errors
+//     });
+// }
+// async function handleRegister(event) {
+//         event.preventDefault(); // Prevents the default form submission
+        
+//         const formData = new FormData(event.target);
+//         const data = Object.fromEntries(formData.entries());
+
+//         try {
+//             const response = await fetch('/register', {
+//                 method: 'POST',
+//                 headers: { 'Content-Type': 'application/json' },
+//                 body: JSON.stringify(data),
+//             });
+
+//             const result = await response.json();
+//             alert(result.message); // Show response message
+            
+//             if (response.ok) {
+//                 window.location.reload(); // Refresh the page
+//                 updateDashboard();
+//             }
+//         } catch (error) {
+//             console.error("Error:", error);
+//             alert("Registration failed");
+//         }
+//     }
+//     window.onload = function() {
+//         updateDashboard(); // Load hospitals on page load
+//     };
+window.onload = function() {
+    showLogin();      // login page show karega
+    //updateDashboard(); 
+};
+async function handleRegister(event) {
+        event.preventDefault();
+
+        const formData = new FormData(event.target);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await fetch('/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+            alert(result.message); 
+
+            if (response.ok) {
+                updateDashboard(); // Fetch new data after registration
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Registration failed");
+        }
+    }
+
+    async function updateDashboard() {
+        try {
+            const hospitalsResponse = await fetch('/hospitals');
+            const bloodbanksResponse = await fetch('/bloodbanks');
+
+            const hospitals = await hospitalsResponse.json();
+            const bloodbanks = await bloodbanksResponse.json();
+
+            // Update hospitals list
+            const hospitalList = document.getElementById("hospitalsList");
+            hospitalList.innerHTML = "";
+            hospitals.forEach(hospital => {
+                const div = document.createElement("div");
+                div.className = "p-4 bg-gray-100 rounded-lg shadow";
+                div.innerHTML = `<h3 class="font-bold">${hospital.name}</h3><p>${hospital.address}</p>`;
+                hospitalList.appendChild(div);
+            });
+
+            // Update blood banks list
+            const bloodBankList = document.getElementById("bloodBanksList");
+            bloodBankList.innerHTML = "";
+            bloodbanks.forEach(bloodbank => {
+                const div = document.createElement("div");
+                div.className = "p-4 bg-gray-100 rounded-lg shadow";
+                div.innerHTML = `<h3 class="font-bold">${bloodbank.name}</h3><p>${bloodbank.address}</p>`;
+                bloodBankList.appendChild(div);
+            });
+
+            showDashboard(); // Ensure dashboard is visible
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    }
+
+    // Ensure dashboard updates on page load
+    // window.onload = function() {
+    //     showLogin(); // Show login form on page load
+    //     updateDashboard();
+    // };
+
+    // if (type === 'hospital') {
+    //     hospitals.push({
+    //         id: hospitals.length + 1,
+    //         name: name,
+    //         address: address
+    //     });
+    // } else {
+    //     bloodBanks.push({
+    //         id: bloodBanks.length + 1,
+    //         name: name,
+    //         address: address,
+    //         inventory: {
+    //             "A+": 0, "A-": 0, "B+": 0, "B-": 0,
+    //             "AB+": 0, "AB-": 0, "O+": 0, "O-": 0
+    //         }
+    //     });
+    // }
+    alert('Registration successful!');
+    showLogin(); // Redirect to login after registration
+
+
+        function handleBloodOrder(event) {
+            event.preventDefault();
+            const bloodGroup = event.target[0].value;
+            const units = event.target[1].value;
+            
+            const availableBanks = bloodBanks.filter(bank => 
+                bank.inventory[bloodGroup] >= units
+            );
+
+            document.getElementById('bloodOrderForm').classList.add('hidden');
+            document.getElementById('availableBloodBanks').classList.remove('hidden');
+
+            const availableList = document.getElementById('availableBloodBanksList');
+            availableList.innerHTML = availableBanks.map(bank => `
+                <div class="border p-4 rounded">
+                    <h3 class="font-bold">${bank.name}</h3>
+                    <p class="text-gray-600">${bank.address}</p>
+                    <p>Available units: ${bank.inventory[bloodGroup]}</p>
+                    <button onclick="selectBloodBank(${bank.id}, '${bloodGroup}', ${units})" 
+                            class="mt-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                        Select Bank
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function selectBloodBank(bankId, bloodGroup, units) {
+            document.getElementById('availableBloodBanks').classList.add('hidden');
+            document.getElementById('patientDetailsForm').classList.remove('hidden');
+            sessionStorage.setItem('orderDetails', JSON.stringify({bankId, bloodGroup, units}));
+        }
+
+        function handlePatientDetails(event) {
+            event.preventDefault();
+            const orderDetails = JSON.parse(sessionStorage.getItem('orderDetails'));
+            const order = {
+                id: orders.length + 1,
+                hospitalId: currentUser,
+                bankId: orderDetails.bankId,
+                bloodGroup: orderDetails.bloodGroup,
+                units: orderDetails.units,
+                patientName: event.target[0].value,
+                date: new Date().toISOString(),
+                status: 'Approved'
+            };
+
+            orders.push(order);
+            const bill = {
+                id: bills.length + 1,
+                orderId: order.id,
+                amount: orderDetails.units * 1000, // Example: 1000 per unit
+                date: new Date().toISOString()
+            };
+            bills.push(bill);
+
+            alert('Blood request approved successfully!');
+            showDashboard();
+        }
+
+        
+        function updateLists() {
+    // Display blood banks
+    document.getElementById('bloodBanksList').innerHTML = bloodBanks.map(bank => `
+        <div class="border p-4 rounded">
+            <h3 class="font-bold">${bank.name}</h3>
+            <p class="text-gray-600">${bank.address}</p>
+            <div class="mt-2 grid grid-cols-2 gap-2">
+                ${Object.entries(bank.inventory).map(([group, count]) => `
+                    <p>${group}: ${count} units</p>
+                `).join('')}
+            </div>
+            <button onclick="orderBlood()" 
+                    class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                Order Blood
+            </button>
+        </div>
+    `).join('');
+
+    // Display hospitals
+    document.getElementById('hospitalsList').innerHTML = hospitals.map(hospital => `
+        <div class="border p-4 rounded">
+            <h3 class="font-bold">${hospital.name}</h3>
+            <p class="text-gray-600">${hospital.address}</p>
+        </div>
+    `).join('');
+}
+async function updateDashboard() {
+    try {
+        const response = await fetch('/hospitals');
+        const hospitals = await response.json();
+
+        const hospitalList = document.getElementById("hospitalsList");
+        hospitalList.innerHTML = ""; // Clear old list
+
+        hospitals.forEach(hospital => {
+            const div = document.createElement("div");
+            div.className = "p-4 bg-gray-100 rounded-lg shadow";
+            div.innerHTML = `<h3 class="font-bold">${hospital.name}</h3><p>${hospital.address}</p>`;
+            hospitalList.appendChild(div);
+        });
+
+        showDashboard(); // Show dashboard after update
+    } catch (error) {
+        console.error("Error fetching hospitals:", error);
+    }
+}
+        
+
+
+        function orderBlood() {
+            hideAllSections();
+            document.getElementById('bloodOrderForm').classList.remove('hidden');
+        }
+
+
+        
+    async function updateDashboard() {
+        try {
+            const response = await fetch('/hospitals');
+            const hospitals = await response.json();
+
+            const hospitalList = document.getElementById("hospitalsList");
+            if (!hospitalList) {
+                console.error("Element with ID 'hospitalsList' not found.");
+                return;
+            }
+            
+            hospitalList.innerHTML = ""; // Clear old list
+
+            hospitals.forEach(hospital => {
+                const div = document.createElement("div");
+                div.className = "p-4 bg-gray-100 rounded-lg shadow";
+                div.innerHTML = `<h3 class="font-bold">${hospital.name}</h3><p>${hospital.address}</p>`;
+                hospitalList.appendChild(div);
+            });
+
+            console.log("Dashboard updated with hospitals:", hospitals);
+        } catch (error) {
+            console.error("Error fetching hospitals:", error);
+        }
+    }
+
+    // window.onload = function() {
+    //     updateDashboard(); // Load hospitals on page load
+    // };
+
+
+
+        function updateOrderHistory() {
+            const history = document.getElementById('orderHistory');
+            history.innerHTML = orders
+                .filter(order => order.hospitalId === currentUser)
+                .map(order => `
+                    <div class="border p-4 rounded">
+                        <h3 class="font-bold">Order #${order.id}</h3>
+                        <p>Blood Group: ${order.bloodGroup}</p>
+                        <p>Units: ${order.units}</p>
+                        <p>Date: ${new Date(order.date).toLocaleDateString()}</p>
+                        <p>Status: ${order.status}</p>
+                    </div>
+                `).join('');
+        }
+
+        function updateBillingHistory() {
+            const billing = document.getElementById('billingHistory');
+            billing.innerHTML = bills
+                .filter(bill => orders.find(order => order.id === bill.orderId).hospitalId === currentUser)
+                .map(bill => `
+                    <div class="border p-4 rounded">
+                        <h3 class="font-bold">Bill #${bill.id}</h3>
+                        <p>Amount: ${bill.amount}</p>
+                        <p>Date: ${new Date(bill.date).toLocaleDateString()}</p>
+                        <button onclick="downloadBill(${bill.id})" 
+                                class="mt-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                            Download Bill
+                        </button>
+                    </div>
+                `).join('');
+        }
+
+        function downloadCertificate() {
+            alert('Certificate download started...');
+        }
+
+        function arrangeCampaign() {
+            alert('Blood campaign request submitted successfully!');
+        }
+
+        function downloadBill(billId) {
+            alert(`Downloading bill #${billId}...`);
+        }
+        function showCertificateDownload() {
+    hideAllSections(); // Hide all other sections
+    populateBloodBankDropdown(); // Populate the dropdown
+    document.getElementById('certificateDownloadForm').classList.remove('hidden'); // Show the certificate form
+}
+
+function populateBloodBankDropdown() {
+    const bloodBankSelect = document.getElementById('bloodBankSelect');
+    bloodBanks.forEach(bank => {
+        const option = document.createElement('option');
+        option.value = bank.name; // Set the value to the bank's name
+        option.textContent = bank.name; // Display the bank's name
+        bloodBankSelect.appendChild(option); // Add the option to the dropdown
+    });
+}
+function showCertificateDownload() {
+    hideAllSections(); // Hide all other sections
+    populateBloodBankDropdown(); // Populate the dropdown
+    document.getElementById('certificateDownloadForm').classList.remove('hidden'); // Show the certificate form
+}
+async function handleCertificateDownload(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    const bloodBank = document.getElementById('bloodBankSelect').value; // Get selected blood bank
+    const name = document.getElementById('certificateName').value; // Get entered name
+
+    // Create a new jsPDF instance with A3 size in landscape orientation
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('landscape', 'pt', 'a3');
+
+    // Set background color
+    doc.setFillColor(255, 223, 186); // Light orange background
+    doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, 'F');
+
+    // Add a border
+    doc.setLineWidth(5);
+    doc.setDrawColor(255, 165, 0); // Orange border
+    doc.rect(10, 10, doc.internal.pageSize.width - 20, doc.internal.pageSize.height - 20);
+
+    let y = 100; // Initial y position for text
+
+    // Title
+    doc.setFontSize(30);
+    doc.setTextColor(0, 102, 204); // Blue color for the title
+    doc.text("Certificate of Blood Donation", doc.internal.pageSize.width / 2, y, { align: "center" });
+
+    y += 80; // Increase y position for spacing
+
+    // Recipient's name
+    doc.setFontSize(22);
+    doc.setTextColor(0, 0, 0); // Black color for the text
+    doc.text(`This certifies that`, doc.internal.pageSize.width / 2, y, { align: "center" });
+
+    y += 50; // Increase y position
+
+    doc.text(`${name}`, doc.internal.pageSize.width / 2, y, { align: "center" });
+
+    y += 60; // Increase y position
+
+    // Additional text with proper spacing
+    doc.setFontSize(16);
+    doc.setTextColor(0, 51, 102); // Darker blue for additional text
+
+    doc.text(`has successfully donated blood at ${bloodBank}.`, doc.internal.pageSize.width / 2, y, { align: "center" });
+
+    y += 50; // Increase y position
+
+    doc.text("Your generous act of donating blood helps save lives and supports those in need.", doc.internal.pageSize.width / 2, y, { align: "center" });
+
+    y += 50; // Increase y position
+
+    doc.text("Thank you for your selfless contribution to the community and for making a difference.", doc.internal.pageSize.width / 2, y, { align: "center" });
+
+    y += 50; // Increase y position
+
+    doc.text("Every drop counts, and your donation can help save up to three lives!", doc.internal.pageSize.width / 2, y, { align: "center" });
+
+    y += 50; // Increase y position
+
+    doc.text("We appreciate your commitment to helping others and encourage you to continue this noble act.", doc.internal.pageSize.width / 2, y, { align: "center" });
+
+    y += 50; // Increase y position
+
+    // Add date
+    const date = new Date().toLocaleDateString();
+    doc.text(`Date: ${date}`, doc.internal.pageSize.width / 2, y, { align: "center" });
+
+    // Save the PDF
+    doc.save(`${name}_Blood_Donation_Certificate.pdf`);
+};
+function arrangeCampaign() {
+    hideAllSections(); // Hide all other sections
+    document.getElementById('campaignForm').classList.remove('hidden'); // Show the campaign form
+}
+    
+function handleCampaignArrangement(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    const campaignName = document.getElementById('campaignName').value;
+    const campaignDate = document.getElementById('campaignDate').value;
+    const campaignLocation = document.getElementById('campaignLocation').value;
+    const contactPerson = document.getElementById('contactPerson').value;
+
+    // Here you can process the campaign data, e.g., send it to a server or save it locally
+    alert(`Campaign "${campaignName}" arranged successfully on ${campaignDate} at ${campaignLocation}. Contact: ${contactPerson}`);
+
+    // Optionally, you can hide the form after submission
+    document.getElementById('campaignForm').classList.add('hidden');
+    showDashboard(); // Redirect to the dashboard or another section
+}
+
+
+   
+        function logout() {
+            currentUser = null;
+            currentUserType = null;
+            updateNavigation();
+            showLogin();
+        }
+
+        // Initialize
+        updateNavigation();
+        
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>

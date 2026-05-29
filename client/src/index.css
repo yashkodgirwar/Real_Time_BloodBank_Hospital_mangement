@@ -1,0 +1,103 @@
+/* Custom scrollbar and background styles copied from original project to preserve UI exactly */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f3f4f6; 
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    overflow-y: auto; /* Allow vertical scrolling */
+    min-height: 100vh; /* Ensure the body takes at least full height of the viewport */
+    width: 100%; /* Ensure the body spans the full width of the screen */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+body::-webkit-scrollbar, html::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.8s ease-out both;
+}
+
+#dashboard, #history, #billing, #campaignForm {
+    overflow-y: auto; /* Allow vertical scrolling if content overflows */
+    max-height: 80vh;  /* Make sure these sections don't extend past 80% of the screen height */
+}
+
+#loginForm, #registerForm, #forgotForm {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+#loginForm p a, #registerForm p a, #forgotForm p a {
+    display: inline-block;
+    color: #dc2626;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+#bloodBanksList::-webkit-scrollbar {
+    width: 0px;
+}
+
+#bloodBanksList:hover::-webkit-scrollbar {
+    width: 6px;
+}
+
+#bloodBanksList::-webkit-scrollbar-thumb {
+    background: #e5e7eb;
+    border-radius: 10px;
+}
+
+#loginForm::-webkit-scrollbar, #registerForm::-webkit-scrollbar, #forgotForm::-webkit-scrollbar {
+    width: 6px;
+}
+
+#loginForm::-webkit-scrollbar-thumb, #registerForm::-webkit-scrollbar-thumb, #forgotForm::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.2); 
+    border-radius: 10px;
+}
+
+#loginForm::-webkit-scrollbar-track, #registerForm::-webkit-scrollbar-track, #forgotForm::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Scrollbar thin classes for RequestStatus page */
+.scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.7);
+    border-radius: 8px;
+}
+
+/* Blinking dot animations */
+.blinking-dot {
+    height: 12px;
+    width: 12px;
+    background-color: #ff0000;
+    border-radius: 9999px;
+    display: inline-block;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
