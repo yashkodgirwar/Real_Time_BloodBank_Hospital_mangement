@@ -291,7 +291,7 @@ const approveRequest = async (req, res) => {
     const hospital = await User.findOne({ name: order.hospitalName, type: "hospital" });
 
     if (hospital && bloodBank) {
-      await sendEmail(
+      sendEmail(
         hospital.email,
         `🩸 Blood Request Approved by ${bloodBank.name}`,
         `
@@ -306,7 +306,9 @@ const approveRequest = async (req, res) => {
           <p style="font-size: 14px;">— BloodLink Team</p>
         </div>
         `
-      );
+      ).catch(emailErr => {
+        console.error("Failed to send approval email:", emailErr);
+      });
     }
 
     if ((req.headers.accept && req.headers.accept.includes('application/json')) || req.headers['content-type'] === 'application/json') {
