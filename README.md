@@ -306,10 +306,3 @@ Holds schedule details for scheduled blood donation events.
 
 ---
 
-## 👥 Contributors
-
-This project was built and is maintained by:
-*   **Yash Kodgirwar**
-*   **Vivek Joshi**
-*   **Mohan**
-*   **Yash Thokal**
