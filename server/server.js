@@ -38,8 +38,22 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '..', 'views'));
 
 // Middleware setup
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:3000'];
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    const isAllowed = allowedOrigins.includes(origin) || 
+                      origin.endsWith('.vercel.app') || 
+                      origin.includes('vercel.app');
+    if (isAllowed) {
+      return callback(null, true);
+    }
+    return callback(new Error('CORS block: Origin not allowed'), false);
+  },
   credentials: true
 }));
 app.use(bodyParser.urlencoded({ extended: true }));
