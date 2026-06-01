@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
@@ -27,7 +28,11 @@ if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && proce
     clUpload = multer({
       storage: multer.diskStorage({
         destination: (req, file, cb) => {
-          cb(null, path.join(__dirname, '..', 'uploads'));
+          const uploadPath = path.join(__dirname, '..', 'uploads');
+          if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+          }
+          cb(null, uploadPath);
         },
         filename: (req, file, cb) => {
           cb(null, Date.now() + '-license-' + file.originalname);
@@ -40,7 +45,11 @@ if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && proce
   clUpload = multer({
     storage: multer.diskStorage({
       destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '..', 'uploads'));
+        const uploadPath = path.join(__dirname, '..', 'uploads');
+        if (!fs.existsSync(uploadPath)) {
+          fs.mkdirSync(uploadPath, { recursive: true });
+        }
+        cb(null, uploadPath);
       },
       filename: (req, file, cb) => {
         cb(null, Date.now() + '-license-' + file.originalname);
@@ -52,8 +61,12 @@ if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && proce
 // 3. Local disk storage for patient approval documents and profile images
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // Save files under server/uploads
-    cb(null, path.join(__dirname, '..', 'uploads'));
+    // Save files under server/uploads (auto-create if missing)
+    const uploadPath = path.join(__dirname, '..', 'uploads');
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + '-' + file.originalname);
