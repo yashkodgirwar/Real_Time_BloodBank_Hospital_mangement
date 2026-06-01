@@ -5,7 +5,8 @@
   "type": "commonjs",
   "scripts": {
     "start": "node server/server.js",
-    "dev": "node server/server.js"
+    "dev": "node server/server.js",
+    "build": "npm run build --prefix client"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

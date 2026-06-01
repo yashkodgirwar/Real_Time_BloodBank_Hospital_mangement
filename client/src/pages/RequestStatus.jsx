@@ -124,19 +124,21 @@ const RequestStatus = () => {
           </h2>
           
           <div className="space-y-4 overflow-y-auto scrollbar-thin flex-1 pr-2">
-            {pendingRequests.length === 0 ? (
+            {pendingRequests.filter(req => req.isDirect !== true && req.isDirect !== 'true').length === 0 ? (
               <p className="text-gray-500 italic text-center py-8">No pending requests at the moment.</p>
             ) : (
-              pendingRequests.map((req) => {
-                const inventoryVal = bloodBank && bloodBank.inventory
-                  ? (bloodBank.inventory[req.bloodGroup] || 0)
-                  : 0;
-                const canApprove = inventoryVal >= req.units;
+              pendingRequests
+                .filter(req => req.isDirect !== true && req.isDirect !== 'true')
+                .map((req) => {
+                  const inventoryVal = bloodBank && bloodBank.inventory
+                    ? (bloodBank.inventory[req.bloodGroup] || 0)
+                    : 0;
+                  const canApprove = inventoryVal >= req.units;
 
-                return (
-                  <div key={req._id} className="bg-gray-100 rounded-xl p-4 shadow-sm hover:shadow-md transition border-2 border-transparent hover:border-black space-y-2">
-                    <div>
-                      <p><strong>Hospital:</strong> {req.hospitalName} <span className="blinking-dot"></span></p>
+                  return (
+                    <div key={req._id} className="bg-gray-100 rounded-xl p-4 shadow-sm hover:shadow-md transition border-2 border-transparent hover:border-black space-y-2">
+                      <div>
+                        <p><strong>Hospital:</strong> {req.hospitalName} <span className="blinking-dot"></span></p>
                       <p><strong>Patient:</strong> {req.patientName}</p>
                       <p><strong>Blood Group:</strong> {req.bloodGroup}</p>
                       <p><strong>Units:</strong> {req.units}</p>
@@ -149,7 +151,7 @@ const RequestStatus = () => {
                         req.documentPath.split(',').map((doc, index) => (
                           <a 
                             key={index} 
-                            href={`/uploads/${doc.trim()}`} 
+                            href={`${axios.defaults.baseURL || ''}/uploads/${doc.trim()}`} 
                             target="_blank" 
                             rel="noreferrer"
                             className="text-blue-600 underline hover:text-blue-800 mr-3 text-sm inline-block"

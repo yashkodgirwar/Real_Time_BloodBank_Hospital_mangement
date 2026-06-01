@@ -80,6 +80,20 @@ const orderBlood = async (req, res) => {
 
     const isDirectVal = isDirect === 'true' || isDirect === true;
 
+    if (isDirectVal) {
+      const bank = await User.findById(bankId);
+      if (!bank || bank.type !== 'bloodbank') {
+        return res.status(404).json({ message: "Blood bank not found" });
+      }
+      const availableUnits = bank.inventory ? (bank.inventory.get(bloodGroup) || 0) : 0;
+      if (availableUnits === 0) {
+        return res.status(400).json({ message: "Order not placed: Selected blood group has 0 units in this blood bank." });
+      }
+      if (parseInt(units) > availableUnits) {
+        return res.status(400).json({ message: "request is not ful fill" });
+      }
+    }
+
     const newOrder = new orders({
       hospitalName: hospital.name,
       hospitalEmail: hospital.email,
@@ -214,7 +228,8 @@ const getRequestStatus = async (req, res) => {
 
       pendingRequests = await orders.find({
         hospitalEmail: user.email,
-        status: 'Pending'
+        status: 'Pending',
+        isDirect: { $nin: [true, 'true'] }
       });
 
     } else {
@@ -230,7 +245,7 @@ const getRequestStatus = async (req, res) => {
 
       pendingRequests = await orders.find({
         status: 'Pending',
-        isDirect: { $ne: true }
+        isDirect: { $nin: [true, 'true'] }
       });
     }
 

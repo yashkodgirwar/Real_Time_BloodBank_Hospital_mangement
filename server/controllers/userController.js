@@ -174,6 +174,10 @@ const uploadProfileImage = async (req, res) => {
       profileImage: profileImagePath
     }, { new: true });
 
+    if (req.session.user && req.session.user._id === req.params.id) {
+      req.session.user.profileImage = profileImagePath;
+    }
+
     if ((req.headers.accept && req.headers.accept.includes('application/json')) || req.headers['content-type'] === 'application/json') {
       return res.json({ message: "Profile image uploaded!", profileImage: profileImagePath });
     }
@@ -208,6 +212,10 @@ const removeProfileImage = async (req, res) => {
 
     user.profileImage = "";
     await user.save();
+
+    if (req.session.user && req.session.user._id === req.params.id) {
+      req.session.user.profileImage = "";
+    }
 
     res.json({ message: "Profile image removed successfully" });
 

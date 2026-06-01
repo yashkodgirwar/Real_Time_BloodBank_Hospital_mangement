@@ -132,7 +132,7 @@ function App() {
               <Route 
                 path="/history" 
                 element={
-                  <ProtectedRoute allowedRoles={['hospital']}>
+                  <ProtectedRoute allowedRoles={['hospital', 'bloodbank']}>
                     <History />
                   </ProtectedRoute>
                 } 

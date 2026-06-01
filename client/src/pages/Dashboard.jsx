@@ -110,6 +110,9 @@ const Dashboard = () => {
         hospitalEmail: user.email
       });
       setAvailableBanks(res.data);
+      if (res.data.length === 0) {
+        alert("fail request");
+      }
       setWizardStep('available-banks');
     } catch (err) {
       console.error("Availability check failed", err);
@@ -131,6 +134,18 @@ const Dashboard = () => {
     if (!approvalDocs || approvalDocs.length === 0) {
       alert("Please upload at least one approval document.");
       return;
+    }
+
+    if (isDirectRequest) {
+      const availableUnits = targetBank.inventory ? (targetBank.inventory[selectedBloodGroup] || 0) : 0;
+      if (availableUnits === 0) {
+        alert("Order not placed: Selected blood group has 0 units in this blood bank.");
+        return;
+      }
+      if (parseInt(unitsRequired) > availableUnits) {
+        alert("request is not ful fill");
+        return;
+      }
     }
 
     const formData = new FormData();
@@ -235,8 +250,9 @@ const Dashboard = () => {
                           >
                             Order Blood
                           </button>
-                          <button 
+                           <button 
                             onClick={() => {
+                              alert("Your request not shown in the global request tab");
                               setTargetBank(bank);
                               setIsDirectRequest(true);
                               setWizardStep('order-form');

@@ -166,7 +166,7 @@ const History = () => {
                 ? entry.documentPath.split(',').map((f, idx) => (
                     <a 
                       key={idx}
-                      href={`/uploads/${f.trim().split('/').pop()}`} 
+                      href={`${axios.defaults.baseURL || ''}/uploads/${f.trim().split('/').pop()}`} 
                       target="_blank" 
                       rel="noreferrer" 
                       className="text-blue-600 underline text-sm mr-3 inline-block"

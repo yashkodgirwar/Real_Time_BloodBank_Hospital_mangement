@@ -455,8 +455,18 @@ const getHistory = async (req, res) => {
   }
 
   try {
-    const hospitalName = req.session.user.name;
-    const entries = await orders.find({ hospitalName }).lean().sort({ date: -1 });
+    let filter = {};
+    if (req.session.user.type === 'hospital') {
+      filter = { hospitalEmail: req.session.user.email };
+    } else if (req.session.user.type === 'bloodbank') {
+      const bank = await User.findOne({ email: req.session.user.email });
+      const bankIdStr = bank ? bank._id.toString() : req.session.user._id;
+      filter = { bankId: bankIdStr };
+    } else {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    const entries = await orders.find(filter).lean().sort({ date: -1 });
 
     for (let entry of entries) {
       if (entry.bankId) {

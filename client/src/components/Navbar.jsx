@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
+import axios from 'axios';
 
 const Navbar = () => {
   const { user, logout } = useContext(UserContext);
@@ -39,7 +40,7 @@ const Navbar = () => {
               
               <Link to="/services" className={linkClass('/services')}>Services</Link>
               
-              {user.type === 'hospital' && (
+              {(user.type === 'hospital' || user.type === 'bloodbank') && (
                 <Link to="/history" className={linkClass('/history')}>History</Link>
               )}
               
@@ -57,7 +58,7 @@ const Navbar = () => {
               <div className="relative">
                 <img 
                   id="navProfileImg" 
-                  src={user.profileImage ? user.profileImage : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} 
+                  src={user.profileImage ? (user.profileImage.startsWith('http') || user.profileImage.startsWith('data:') ? user.profileImage : `${axios.defaults.baseURL || ''}${user.profileImage}`) : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} 
                   alt="Profile"
                   className="w-8 h-8 rounded-full cursor-pointer border border-white object-cover" 
                   onClick={() => setDropdownOpen(!dropdownOpen)} 

@@ -135,7 +135,8 @@ const loginUser = async (req, res) => {
       email: user.email,
       type: user.type,
       address: user.address,
-      licenseNumber: user.licenseNumber
+      licenseNumber: user.licenseNumber,
+      profileImage: user.profileImage
     };
     res.status(200).json({ message: 'Login successful', user });
 
@@ -179,7 +180,7 @@ const forgotPassword = async (req, res) => {
 
     await user.save();
 
-    const resetLink = `http://localhost:3000/reset-password/${token}`;
+    const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password/${token}`;
 
     sendEmail(
       user.email,

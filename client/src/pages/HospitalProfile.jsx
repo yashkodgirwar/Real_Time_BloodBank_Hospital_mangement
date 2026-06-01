@@ -199,7 +199,7 @@ const HospitalProfile = () => {
         {/* Profile Image & Upload Section */}
         <div className="flex flex-col items-center mb-8 border-b pb-6">
           <img 
-            src={previewUrl || 'https://via.placeholder.com/120'} 
+            src={previewUrl ? (previewUrl.startsWith('http') || previewUrl.startsWith('data:') ? previewUrl : `${axios.defaults.baseURL || ''}${previewUrl}`) : 'https://via.placeholder.com/120'} 
             alt="Profile Avatar"
             className="w-32 h-32 rounded-full border-4 border-red-500 shadow-lg mb-3 object-cover"
           />
@@ -316,7 +316,7 @@ const HospitalProfile = () => {
                 <ul className="space-y-2">
                   {hospital.licenses.map((licenseUrl, idx) => (
                     <li key={idx}>
-                      <a href={licenseUrl} target="_blank" rel="noreferrer" className="text-blue-600 underline hover:text-blue-800 flex items-center gap-1">
+                      <a href={licenseUrl.startsWith('http') || licenseUrl.startsWith('data:') ? licenseUrl : `${axios.defaults.baseURL || ''}${licenseUrl.startsWith('/') ? '' : '/'}${licenseUrl}`} target="_blank" rel="noreferrer" className="text-blue-600 underline hover:text-blue-800 flex items-center gap-1">
                         📄 License {idx + 1}
                       </a>
                     </li>

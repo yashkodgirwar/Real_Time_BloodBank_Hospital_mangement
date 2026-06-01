@@ -50,9 +50,9 @@ const Landing = () => {
         <div className="grid md:grid-cols-2 gap-8">
           
           {/* Hospital Features */}
-          <div className="bg-white p-8 rounded-3xl border border-red-100 shadow-xl hover:shadow-2xl transition duration-300 flex flex-col justify-between group">
+          <div className="bg-white p-8 rounded-3xl border border-blue-100 shadow-xl hover:shadow-2xl transition duration-300 flex flex-col justify-between group">
             <div>
-              <div className="w-14 h-14 bg-red-50 rounded-2xl flex items-center justify-center mb-6 text-red-600 text-3xl group-hover:scale-110 transition duration-300">
+              <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 text-blue-600 text-3xl group-hover:scale-110 transition duration-300">
                 <i className="bi bi-hospital"></i>
               </div>
               <h3 className="text-2xl font-bold text-gray-800 mb-4">For Hospitals & Clinics</h3>
@@ -61,15 +61,15 @@ const Landing = () => {
               </p>
               <ul className="space-y-3.5 text-gray-700 text-sm">
                 <li className="flex items-start gap-3">
-                  <i className="bi bi-check2-circle text-red-500 text-lg mt-0.5"></i>
+                  <i className="bi bi-check2-circle text-blue-500 text-lg mt-0.5"></i>
                   <span><b>Real-Time Availability Check:</b> Search by blood type and quantity across all registered blood banks instantly.</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <i className="bi bi-check2-circle text-red-500 text-lg mt-0.5"></i>
+                  <i className="bi bi-check2-circle text-blue-500 text-lg mt-0.5"></i>
                   <span><b>Documentation Upload:</b> Safely upload required patient approval documents to speed up verification.</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <i className="bi bi-check2-circle text-red-500 text-lg mt-0.5"></i>
+                  <i className="bi bi-check2-circle text-blue-500 text-lg mt-0.5"></i>
                   <span><b>Billing & Invoice Records:</b> Access fully transparent billing receipts and request logs on the go.</span>
                 </li>
               </ul>
@@ -77,7 +77,7 @@ const Landing = () => {
             <div className="mt-8 pt-6 border-t border-gray-100">
               <button 
                 onClick={() => navigate('/register')}
-                className="w-full bg-red-50 hover:bg-red-100 text-red-700 font-bold py-3 px-6 rounded-xl transition duration-200"
+                className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold py-3 px-6 rounded-xl transition duration-200"
               >
                 Register as Hospital
               </button>
@@ -85,9 +85,9 @@ const Landing = () => {
           </div>
 
           {/* Blood Bank Features */}
-          <div className="bg-white p-8 rounded-3xl border border-blue-100 shadow-xl hover:shadow-2xl transition duration-300 flex flex-col justify-between group">
+          <div className="bg-white p-8 rounded-3xl border border-red-100 shadow-xl hover:shadow-2xl transition duration-300 flex flex-col justify-between group">
             <div>
-              <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 text-blue-600 text-3xl group-hover:scale-110 transition duration-300">
+              <div className="w-14 h-14 bg-red-50 rounded-2xl flex items-center justify-center mb-6 text-red-600 text-3xl group-hover:scale-110 transition duration-300">
                 <i className="bi bi-droplet-fill"></i>
               </div>
               <h3 className="text-2xl font-bold text-gray-800 mb-4">For Blood Banks</h3>
@@ -96,15 +96,15 @@ const Landing = () => {
               </p>
               <ul className="space-y-3.5 text-gray-700 text-sm">
                 <li className="flex items-start gap-3">
-                  <i className="bi bi-check2-circle text-blue-500 text-lg mt-0.5"></i>
+                  <i className="bi bi-check2-circle text-red-500 text-lg mt-0.5"></i>
                   <span><b>Stock Management:</b> View and adjust inventories for 8 primary blood types with dynamic list rendering.</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <i className="bi bi-check2-circle text-blue-500 text-lg mt-0.5"></i>
+                  <i className="bi bi-check2-circle text-red-500 text-lg mt-0.5"></i>
                   <span><b>AI Campaign Targeting:</b> Utilize smart, model-driven suggestions to find areas with the highest blood supply gaps.</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <i className="bi bi-check2-circle text-blue-500 text-lg mt-0.5"></i>
+                  <i className="bi bi-check2-circle text-red-500 text-lg mt-0.5"></i>
                   <span><b>Certificate Distribution:</b> Schedule campaign drives and design official printable PDF donation certificates.</span>
                 </li>
               </ul>
@@ -112,7 +112,7 @@ const Landing = () => {
             <div className="mt-8 pt-6 border-t border-gray-100">
               <button 
                 onClick={() => navigate('/register')}
-                className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold py-3 px-6 rounded-xl transition duration-200"
+                className="w-full bg-red-50 hover:bg-red-100 text-red-700 font-bold py-3 px-6 rounded-xl transition duration-200"
               >
                 Register as Blood Bank
               </button>
