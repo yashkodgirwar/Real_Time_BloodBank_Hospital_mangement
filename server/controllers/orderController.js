@@ -39,7 +39,7 @@ function getCoordinates(address) {
   for (let i = 0; i < address.length; i++) {
     hash = address.charCodeAt(i) + ((hash << 5) - hash);
   }
-  
+
   // Deterministic offsets (roughly -0.05 to +0.05 degrees, ~5-10km range)
   const latOffset = ((hash & 0xFFFF) / 65535 - 0.5) * 0.1;
   const lonOffset = (((hash >> 16) & 0xFFFF) / 65535 - 0.5) * 0.1;
@@ -55,11 +55,11 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   const R = 6371; // km
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
 
@@ -157,7 +157,7 @@ const checkAvailability = async (req, res) => {
     const mappedBanks = banks.map(bank => {
       const bankCoords = getCoordinates(bank.address);
       const dist = calculateDistance(hospCoords.lat, hospCoords.lon, bankCoords.lat, bankCoords.lon);
-      
+
       const bankObj = bank.toObject();
       bankObj.distance = dist;
       return bankObj;

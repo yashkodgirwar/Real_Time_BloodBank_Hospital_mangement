@@ -5,7 +5,11 @@ import './index.css'
 import App from './App.jsx'
 
 // Axios configuration for cross-origin sessions
-axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || (import.meta.env.MODE === 'development' ? '' : 'https://real-time-bloodbank-hospital-mangement.onrender.com');
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL || (
+  window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? ''
+    : 'https://real-time-bloodbank-hospital-mangement.onrender.com'
+);
 axios.defaults.withCredentials = true;
 
 createRoot(document.getElementById('root')).render(

@@ -74,15 +74,7 @@ const Billing = () => {
       // Calculate total pending
       let total = 0;
       res.data.forEach(item => {
-        // If hospital view, only add up unpaid orders
-        if (user.type === 'hospital') {
-          const isAllPaid = item.orders && item.orders.every(o => o.paymentStatus === 'Paid');
-          if (!isAllPaid) {
-            total += item.totalPending;
-          }
-        } else {
-          total += item.totalPending;
-        }
+        total += item.totalPending;
       });
       setGrossTotal(total);
     } catch (err) {
@@ -263,7 +255,7 @@ const Billing = () => {
                           <i className="bi bi-bank text-red-600"></i> {item.bankName}
                         </h4>
                         <div className="text-right">
-                          <span className="text-xs text-gray-500 block">Total Amount</span>
+                          <span className="text-xs text-gray-500 block">Total Pending</span>
                           <span className="text-xl font-bold text-red-600">₹{item.totalPending}</span>
                         </div>
                       </div>
@@ -273,7 +265,7 @@ const Billing = () => {
                           onClick={() => toggleBreakthrough(item.bankId)}
                           className="text-blue-600 hover:text-blue-800 underline text-sm flex items-center gap-1 font-semibold"
                         >
-                          <i className="bi bi-calendar-check text-base"></i> View Day-wise Breakthrough
+                          <i className="bi bi-calendar-check text-base"></i> View Date & Time-wise Breakthrough
                         </button>
 
                         {isPaid ? (
@@ -292,7 +284,7 @@ const Billing = () => {
 
                       {openBreakthroughs[item.bankId] && (
                         <div className="bg-gray-50 px-4 pb-4 rounded-b-lg border-t pt-4 border-gray-100 animate-fadeIn">
-                          <h5 className="text-sm font-semibold mb-2 text-gray-600 uppercase tracking-wide">Day-wise Details</h5>
+                          <h5 className="text-sm font-semibold mb-2 text-gray-600 uppercase tracking-wide">Date & Time-wise Details</h5>
                           <ul className="space-y-1 text-sm bg-white p-3 rounded border">
                             {Object.entries(item.daywise || {}).map(([day, val]) => (
                               <li key={day} className="flex justify-between border-b py-1 text-gray-700">
@@ -403,7 +395,7 @@ const Billing = () => {
                           onClick={() => toggleBreakthrough(safeEmail)}
                           className="text-blue-600 hover:text-blue-800 underline text-sm flex items-center gap-1 font-semibold"
                         >
-                          <i className="bi bi-calendar-check text-base"></i> View Day-wise Breakthrough
+                          <i className="bi bi-calendar-check text-base"></i> View Date & Time-wise Breakthrough
                         </button>
 
                         {isPaid ? (
@@ -419,7 +411,7 @@ const Billing = () => {
 
                       {openBreakthroughs[safeEmail] && (
                         <div className="bg-gray-50 px-4 pb-4 rounded-b-lg border-t pt-4 border-gray-100 animate-fadeIn">
-                          <h5 className="text-sm font-semibold mb-2 text-gray-600 uppercase tracking-wide">Day-wise Details</h5>
+                          <h5 className="text-sm font-semibold mb-2 text-gray-600 uppercase tracking-wide">Date & Time-wise Details</h5>
                           <ul className="space-y-1 text-sm bg-white p-3 rounded border">
                             {Object.entries(item.daywise || {}).map(([day, val]) => (
                               <li key={day} className="flex justify-between border-b py-1 text-gray-700">

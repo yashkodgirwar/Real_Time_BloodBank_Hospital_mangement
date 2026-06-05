@@ -335,7 +335,7 @@ const Dashboard = () => {
                               req.documentPath.split(',').map((doc, idx) => (
                                 <a 
                                   key={idx} 
-                                  href={`/uploads/${doc.trim()}`} 
+                                  href={`${axios.defaults.baseURL || ''}/uploads/${doc.trim()}`} 
                                   target="_blank" 
                                   rel="noreferrer"
                                   className="text-blue-600 underline hover:text-blue-800 mr-3 text-sm inline-block"

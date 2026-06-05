@@ -123,7 +123,7 @@ const getHospitalBilling = async (req, res) => {
       filter.date = { $gte: start, $lte: end };
     }
 
-    const results = await orders.find(filter).lean();
+    const results = await orders.find(filter).sort({ date: 1 }).lean();
 
     const groupedData = {};
     for (let order of results) {
@@ -149,14 +149,22 @@ const getHospitalBilling = async (req, res) => {
       }
 
       const amount = (order.units || 0) * 10;
-      groupedData[order.bankId].totalPending += amount;
+      if (order.paymentStatus !== 'Paid') {
+        groupedData[order.bankId].totalPending += amount;
+      }
       groupedData[order.bankId].orders.push({ ...order, amount });
 
-      const dayString = new Date(order.date).toLocaleDateString();
-      if (!groupedData[order.bankId].daywise[dayString]) {
-        groupedData[order.bankId].daywise[dayString] = 0;
+      if (order.paymentStatus !== 'Paid') {
+        const dateObj = new Date(order.date);
+        const formattedDate = dateObj.toLocaleDateString();
+        const formattedTime = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+        const dayString = `${formattedDate} ${formattedTime}`;
+
+        if (!groupedData[order.bankId].daywise[dayString]) {
+          groupedData[order.bankId].daywise[dayString] = 0;
+        }
+        groupedData[order.bankId].daywise[dayString] += amount;
       }
-      groupedData[order.bankId].daywise[dayString] += amount;
     }
 
     res.json(Object.values(groupedData));
@@ -183,7 +191,7 @@ const getBloodbankPendingBills = async (req, res) => {
       bankId: String(bloodBank._id),
       status: 'Approved'
     };
-    
+
     if (paymentStatus && paymentStatus !== 'All') {
       if (paymentStatus === 'Unpaid') {
         filter.$or = [{ paymentStatus: 'Unpaid' }, { paymentStatus: { $exists: false } }];
@@ -234,7 +242,11 @@ const getBloodbankPendingBills = async (req, res) => {
       groupedData[order.hospitalEmail].totalPending += amount;
       groupedData[order.hospitalEmail].orders.push({ ...order._doc, amount });
 
-      const dayString = new Date(order.date).toLocaleDateString();
+      const dateObj = new Date(order.date);
+      const formattedDate = dateObj.toLocaleDateString();
+      const formattedTime = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+      const dayString = `${formattedDate} ${formattedTime}`;
+
       if (!groupedData[order.hospitalEmail].daywise[dayString]) {
         groupedData[order.hospitalEmail].daywise[dayString] = 0;
       }
