@@ -1,6 +1,21 @@
 import React, { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { UserProvider, UserContext } from './context/UserContext';
+import toast, { Toaster } from 'react-hot-toast';
+
+// Global override for window.alert to automatically use react-hot-toast
+if (typeof window !== 'undefined') {
+  window.alert = (message) => {
+    const msg = String(message).toLowerCase();
+    if (msg.includes('success') || msg.includes('successfully') || msg.includes('approved')) {
+      toast.success(message, { duration: 4000 });
+    } else if (msg.includes('error') || msg.includes('fail') || msg.includes('wrong') || msg.includes('expired') || msg.includes('invalid') || msg.includes('not enough')) {
+      toast.error(message, { duration: 5000 });
+    } else {
+      toast(message, { duration: 4000 });
+    }
+  };
+}
 
 // Components
 import Navbar from './components/Navbar';
@@ -58,6 +73,7 @@ function App() {
       <Router>
         <div className="flex flex-col min-h-screen">
           <Navbar />
+          <Toaster position="top-right" reverseOrder={false} />
           
           <main className="flex-1">
             <Routes>

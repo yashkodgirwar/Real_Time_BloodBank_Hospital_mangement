@@ -439,12 +439,16 @@ const payBill = async (req, res) => {
              </div>
            `;
 
-          sendEmail(hospitalUser.email, "Blood Bank Payment Receipt", receiptHtml, attachments).catch(emailErr => {
+          try {
+            await sendEmail(hospitalUser.email, "Blood Bank Payment Receipt", receiptHtml, attachments);
+          } catch (emailErr) {
             console.error("Error sending receipt email to hospital:", emailErr);
-          });
-          sendEmail(bankUser.email, "Blood Bank Payment Received", receiptHtml, attachments).catch(emailErr => {
+          }
+          try {
+            await sendEmail(bankUser.email, "Blood Bank Payment Received", receiptHtml, attachments);
+          } catch (emailErr) {
             console.error("Error sending receipt email to bank:", emailErr);
-          });
+          }
         }
       }
     } catch (emailErr) {

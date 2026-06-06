@@ -306,24 +306,26 @@ const approveRequest = async (req, res) => {
     const hospital = await User.findOne({ name: order.hospitalName, type: "hospital" });
 
     if (hospital && bloodBank) {
-      sendEmail(
-        hospital.email,
-        `🩸 Blood Request Approved by ${bloodBank.name}`,
-        `
-        <div style="font-family: Arial, sans-serif; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; max-width: 600px; margin: auto;">
-          <h2 style="color: #d32f2f;">BloodLink Notification</h2>
-          <p>Hello <strong>${hospital.name}</strong>,</p>
-          <p>Your request for <strong>${order.units} units</strong> of <strong>${order.bloodGroup}</strong> blood has been 
-          <span style="color: green;"><strong>approved</strong></span> by <strong>${bloodBank.name}</strong>.</p>
-          <p>You can now proceed with collection at <strong>${bloodBank.name}</strong>.</p>
-          <hr style="border: none; border-top: 1px solid #ccc;">
-          <p style="font-size: 12px; color: #777;">This is an automated message. Please do not reply.</p>
-          <p style="font-size: 14px;">— BloodLink Team</p>
-        </div>
-        `
-      ).catch(emailErr => {
+      try {
+        await sendEmail(
+          hospital.email,
+          `🩸 Blood Request Approved by ${bloodBank.name}`,
+          `
+          <div style="font-family: Arial, sans-serif; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; max-width: 600px; margin: auto;">
+            <h2 style="color: #d32f2f;">BloodLink Notification</h2>
+            <p>Hello <strong>${hospital.name}</strong>,</p>
+            <p>Your request for <strong>${order.units} units</strong> of <strong>${order.bloodGroup}</strong> blood has been 
+            <span style="color: green;"><strong>approved</strong></span> by <strong>${bloodBank.name}</strong>.</p>
+            <p>You can now proceed with collection at <strong>${bloodBank.name}</strong>.</p>
+            <hr style="border: none; border-top: 1px solid #ccc;">
+            <p style="font-size: 12px; color: #777;">This is an automated message. Please do not reply.</p>
+            <p style="font-size: 14px;">— BloodLink Team</p>
+          </div>
+          `
+        );
+      } catch (emailErr) {
         console.error("Failed to send approval email:", emailErr);
-      });
+      }
     }
 
     if ((req.headers.accept && req.headers.accept.includes('application/json')) || req.headers['content-type'] === 'application/json') {
