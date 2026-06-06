@@ -195,11 +195,11 @@ const forgotPassword = async (req, res) => {
         <p>This link will expire in 1 hour.</p>
         `
       );
+      res.json({ message: "Password reset link sent to email" });
     } catch (err) {
       console.error("Failed to send password reset email:", err);
+      res.status(500).json({ message: "Failed to send email", error: err.message });
     }
-
-    res.json({ message: "Password reset link sent to email" });
 
   } catch (err) {
     console.error(err);
