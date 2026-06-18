@@ -91,7 +91,15 @@ const updateHospital = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({ message: "Invalid Hospital ID" });
     }
-    await User.findByIdAndUpdate(req.params.id, req.body);
+    const updated = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    
+    if (req.session.user && req.session.user._id === req.params.id) {
+      req.session.user.name = updated.name;
+      req.session.user.email = updated.email;
+      req.session.user.address = updated.address;
+      req.session.user.licenseNumber = updated.licenseNumber;
+    }
+
     if ((req.headers.accept && req.headers.accept.includes('application/json')) || req.headers['content-type'] === 'application/json') {
       return res.json({ message: "Hospital updated successfully!" });
     }
@@ -108,7 +116,15 @@ const updateBloodBank = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({ message: "Invalid Blood Bank ID" });
     }
-    await User.findByIdAndUpdate(req.params.id, req.body);
+    const updated = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+
+    if (req.session.user && req.session.user._id === req.params.id) {
+      req.session.user.name = updated.name;
+      req.session.user.email = updated.email;
+      req.session.user.address = updated.address;
+      req.session.user.licenseNumber = updated.licenseNumber;
+    }
+
     if ((req.headers.accept && req.headers.accept.includes('application/json')) || req.headers['content-type'] === 'application/json') {
       return res.json({ message: "Blood bank updated successfully!" });
     }
@@ -168,7 +184,12 @@ const uploadProfileImage = async (req, res) => {
       return res.status(400).json({ message: "Invalid User ID" });
     }
     
-    const profileImagePath = `/uploads/${req.file.filename}`;
+    let profileImagePath;
+    if (req.file.path && req.file.path.startsWith('http')) {
+      profileImagePath = req.file.path;
+    } else {
+      profileImagePath = `/uploads/${req.file.filename}`;
+    }
     
     const user = await User.findByIdAndUpdate(req.params.id, {
       profileImage: profileImagePath
@@ -201,8 +222,8 @@ const removeProfileImage = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (user.profileImage) {
-      // Resolve path relative to server root
+    if (user.profileImage && !user.profileImage.startsWith('http')) {
+      // Resolve path relative to server root only if it's a local file
       const filePath = path.join(__dirname, '..', user.profileImage);
 
       if (fs.existsSync(filePath)) {
