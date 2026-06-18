@@ -58,7 +58,54 @@ if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && proce
   });
 }
 
-// 3. Local disk storage for patient approval documents and profile images
+// 3. Cloudinary storage for profile pictures with local fallback
+let profileUpload;
+if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+  try {
+    const profileStorage = new CloudinaryStorage({
+      cloudinary: cloudinary,
+      params: {
+        folder: 'bloodlink_profiles',
+        allowedFormats: ['jpg', 'png', 'jpeg']
+      }
+    });
+    profileUpload = multer({ storage: profileStorage });
+  } catch (err) {
+    console.warn("Cloudinary storage setup failed for profiles. Falling back to local storage:", err.message);
+    profileUpload = multer({
+      storage: multer.diskStorage({
+        destination: (req, file, cb) => {
+          const uploadPath = path.join(__dirname, '..', 'uploads');
+          if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+          }
+          cb(null, uploadPath);
+        },
+        filename: (req, file, cb) => {
+          cb(null, Date.now() + '-profile-' + file.originalname);
+        }
+      })
+    });
+  }
+} else {
+  console.warn("Cloudinary environment variables not fully set. Using local disk storage for profiles.");
+  profileUpload = multer({
+    storage: multer.diskStorage({
+      destination: (req, file, cb) => {
+        const uploadPath = path.join(__dirname, '..', 'uploads');
+        if (!fs.existsSync(uploadPath)) {
+          fs.mkdirSync(uploadPath, { recursive: true });
+        }
+        cb(null, uploadPath);
+      },
+      filename: (req, file, cb) => {
+        cb(null, Date.now() + '-profile-' + file.originalname);
+      }
+    })
+  });
+}
+
+// 4. Local disk storage for patient approval documents and profile images
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     // Save files under server/uploads (auto-create if missing)
@@ -93,5 +140,6 @@ const upload = multer({
 module.exports = {
   upload,
   clUpload,
+  profileUpload,
   cloudinary
 };
