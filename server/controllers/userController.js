@@ -214,8 +214,6 @@ const uploadProfileImage = async (req, res) => {
 // 7. Remove Profile Image
 const removeProfileImage = async (req, res) => {
   try {
-    console.log("Remove clicked ✅");
-
     const user = await User.findById(req.params.id);
 
     if (!user) {

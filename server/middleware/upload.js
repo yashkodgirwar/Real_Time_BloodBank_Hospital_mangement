@@ -71,7 +71,6 @@ if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && proce
     });
     profileUpload = multer({ storage: profileStorage });
   } catch (err) {
-    console.warn("Cloudinary storage setup failed for profiles. Falling back to local storage:", err.message);
     profileUpload = multer({
       storage: multer.diskStorage({
         destination: (req, file, cb) => {
@@ -88,7 +87,6 @@ if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && proce
     });
   }
 } else {
-  console.warn("Cloudinary environment variables not fully set. Using local disk storage for profiles.");
   profileUpload = multer({
     storage: multer.diskStorage({
       destination: (req, file, cb) => {

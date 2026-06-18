@@ -43,7 +43,6 @@ const BloodBankProfile = () => {
       setBankIFSCCode(data.bankIFSCCode || '');
       setPreviewUrl(data.profileImage || '');
     } catch (err) {
-      console.error("Error fetching blood bank profile", err);
       toast.error("Failed to load blood bank profile details.");
     } finally {
       setLoading(false);
@@ -67,7 +66,6 @@ const BloodBankProfile = () => {
       fetchProfileDetails();
       refreshProfile(); // Sync nav header profile
     } catch (err) {
-      console.error("Failed to update profile", err);
       toast.error("Error updating profile settings.");
     } finally {
       setLoading(false);
@@ -108,7 +106,6 @@ const BloodBankProfile = () => {
       fetchProfileDetails();
       refreshProfile(); // Sync nav header
     } catch (err) {
-      console.error("Failed to upload image", err);
       toast.error("Error uploading profile image.");
     } finally {
       setLoading(false);
@@ -127,7 +124,6 @@ const BloodBankProfile = () => {
       fetchProfileDetails();
       refreshProfile(); // Sync nav header
     } catch (err) {
-      console.error("Failed to remove image", err);
       toast.error("Error removing profile image.");
     } finally {
       setLoading(false);
@@ -148,7 +144,6 @@ const BloodBankProfile = () => {
         logout();
         navigate('/');
       } catch (err) {
-        console.error("Failed to request deletion", err);
         toast.error("Error requesting account deletion.");
       } finally {
         setLoading(false);
