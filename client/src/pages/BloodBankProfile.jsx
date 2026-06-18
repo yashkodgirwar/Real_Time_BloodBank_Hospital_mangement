@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { UserContext } from '../context/UserContext';
 import Loader from '../components/Loader';
+import toast from 'react-hot-toast';
 
 const BloodBankProfile = () => {
   const { id } = useParams();
@@ -43,7 +44,7 @@ const BloodBankProfile = () => {
       setPreviewUrl(data.profileImage || '');
     } catch (err) {
       console.error("Error fetching blood bank profile", err);
-      alert("Failed to load blood bank profile details.");
+      toast.error("Failed to load blood bank profile details.");
     } finally {
       setLoading(false);
     }
@@ -61,13 +62,13 @@ const BloodBankProfile = () => {
       await axios.post(`/update-bloodbank/${id}`, {
         name, email, address, licenseNumber, bankAccountNumber, bankIFSCCode
       });
-      alert("Profile updated successfully!");
+      toast.success("Profile updated successfully!");
       setEditMode(false);
       fetchProfileDetails();
       refreshProfile(); // Sync nav header profile
     } catch (err) {
       console.error("Failed to update profile", err);
-      alert("Error updating profile settings.");
+      toast.error("Error updating profile settings.");
     } finally {
       setLoading(false);
     }
@@ -101,14 +102,14 @@ const BloodBankProfile = () => {
       await axios.post(`/upload-profile/${id}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      alert("Profile image uploaded successfully!");
+      toast.success("Profile image uploaded successfully!");
       setSelectedFile(null);
       setFileName('');
       fetchProfileDetails();
       refreshProfile(); // Sync nav header
     } catch (err) {
       console.error("Failed to upload image", err);
-      alert("Error uploading profile image.");
+      toast.error("Error uploading profile image.");
     } finally {
       setLoading(false);
     }
@@ -121,13 +122,13 @@ const BloodBankProfile = () => {
     setLoading(true);
     try {
       const res = await axios.post(`/remove-profile/${id}`);
-      alert(res.data.message);
+      toast.success(res.data.message || "Profile image removed successfully!");
       setPreviewUrl('');
       fetchProfileDetails();
       refreshProfile(); // Sync nav header
     } catch (err) {
       console.error("Failed to remove image", err);
-      alert("Error removing profile image.");
+      toast.error("Error removing profile image.");
     } finally {
       setLoading(false);
     }
@@ -143,12 +144,12 @@ const BloodBankProfile = () => {
       setLoading(true);
       try {
         await axios.get(`/delete-bloodbank/${id}`);
-        alert("Your blood bank will be deleted after 29 days.");
+        toast.success("Your blood bank will be deleted after 29 days.");
         logout();
         navigate('/');
       } catch (err) {
         console.error("Failed to request deletion", err);
-        alert("Error requesting account deletion.");
+        toast.error("Error requesting account deletion.");
       } finally {
         setLoading(false);
       }
@@ -164,178 +165,205 @@ const BloodBankProfile = () => {
   }
 
   return (
-    <div className="bg-gradient-to-br from-gray-100 to-gray-200 min-h-screen p-6 animate-fadeIn">
+    <div className="bg-gradient-to-br from-gray-100 to-gray-200 min-h-screen p-4 md:p-8 animate-fadeIn">
       {loading && <Loader message="Updating profile details..." />}
 
-      <div className="max-w-3xl mx-auto mt-10 bg-white p-8 rounded-3xl shadow-2xl border border-gray-200">
+      <div className="max-w-3xl mx-auto mt-6 bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-gray-200">
         
         {/* Top Bar */}
-        <div className="flex justify-between items-center mb-8">
-          <button onClick={() => navigate('/')} className="bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300 transition font-semibold text-gray-700">
-            ← Back
+        <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-200">
+          <button 
+            onClick={() => navigate('/')} 
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-gray-200 text-gray-800 rounded-xl hover:bg-gray-300 transition font-bold text-xs"
+          >
+            <i className="bi bi-arrow-left"></i> Back
           </button>
 
-          <h2 className="text-2xl font-bold text-red-600 tracking-wide">
-            -----------Blood Bank Profile-----------
+          <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+            <span className="text-red-600 text-xl">🩸</span> Blood Bank Profile
           </h2>
 
           {!editMode ? (
             <button 
               onClick={() => setEditMode(true)}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition shadow font-semibold"
+              className="bg-red-600 text-white px-4 py-1.5 rounded-xl hover:bg-red-700 transition shadow font-bold text-xs flex items-center gap-1"
             >
-              Edit
+              <i className="bi bi-pencil-square"></i> Edit
             </button>
           ) : (
             <button 
-              onClick={() => setEditMode(false)}
-              className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition shadow font-semibold"
+              onClick={() => { setEditMode(false); fetchProfileDetails(); }}
+              className="bg-gray-655 text-white px-4 py-1.5 rounded-xl hover:bg-gray-700 transition shadow font-bold text-xs flex items-center gap-1"
             >
-              Cancel
+              <i className="bi bi-x-circle"></i> Cancel
             </button>
           )}
         </div>
 
         {/* Profile Image & Upload Section */}
-        <div className="flex flex-col items-center mb-8 border-b pb-6">
-          <img 
-            src={previewUrl ? (previewUrl.startsWith('http') || previewUrl.startsWith('data:') ? previewUrl : `${axios.defaults.baseURL || ''}${previewUrl}`) : 'https://via.placeholder.com/120'} 
-            alt="Profile Avatar"
-            className="w-32 h-32 rounded-full border-4 border-red-500 shadow-lg mb-3 object-cover"
-          />
-
-          {previewUrl && (
-            <button 
-              type="button" 
-              onClick={handleRemoveImage}
-              className="mb-3 bg-red-500 text-white px-4 py-1 rounded-lg hover:bg-red-600 transition text-sm font-semibold"
-            >
-              🗑 Remove Image
-            </button>
-          )}
-
-          {/* UPLOAD FORM */}
-          <form onSubmit={handleUploadImage} className="flex flex-col items-center gap-2">
-            <label className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition shadow text-sm font-semibold">
-              📁 Choose Image
-              <input type="file" onChange={handleFileChange} className="hidden" accept="image/*" />
-            </label>
-
-            {fileName && <p className="text-xs text-gray-500 mt-1 font-semibold">Selected: {fileName}</p>}
-
-            {selectedFile && (
+        <div className="flex flex-col items-center mb-8 border-b border-gray-200 pb-8">
+          <div className="relative group">
+            <img 
+              src={previewUrl ? (previewUrl.startsWith('http') || previewUrl.startsWith('data:') ? previewUrl : `${axios.defaults.baseURL || ''}${previewUrl}`) : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'} 
+              alt="Profile Avatar"
+              className="w-28 h-28 rounded-full border-4 border-red-500/20 shadow-md mb-2 object-cover transition duration-300 group-hover:scale-105"
+            />
+            
+            {previewUrl && (
               <button 
-                type="submit" 
-                className="bg-green-600 text-white px-4 py-1 rounded-lg hover:bg-green-700 transition text-sm font-semibold shadow mt-1"
+                type="button" 
+                onClick={handleRemoveImage}
+                title="Remove Image"
+                className="absolute top-0 right-0 bg-red-600 hover:bg-red-700 text-white rounded-full p-1.5 shadow border border-white transition-transform hover:scale-115 flex items-center justify-center"
               >
-                Upload Image
+                <i className="bi bi-trash text-xs"></i>
               </button>
             )}
+          </div>
+
+          {/* UPLOAD FORM */}
+          <form onSubmit={handleUploadImage} className="flex flex-col items-center gap-2 mt-4">
+            <div className="flex items-center gap-2.5">
+              <label className="cursor-pointer bg-gray-200 text-gray-800 px-4 py-1.5 rounded-xl hover:bg-gray-300 transition text-xs font-bold border border-gray-300 flex items-center gap-1.5">
+                <i className="bi bi-folder-plus text-sm"></i> Choose Image
+                <input type="file" onChange={handleFileChange} className="hidden" accept="image/*" />
+              </label>
+
+              {selectedFile && (
+                <button 
+                  type="submit" 
+                  className="bg-green-600 text-white px-4 py-1.5 rounded-xl hover:bg-green-700 transition text-xs font-bold shadow flex items-center gap-1.5 animate-pulse"
+                >
+                  <i className="bi bi-cloud-arrow-up-fill text-sm"></i> Upload Image
+                </button>
+              )}
+            </div>
+            {fileName && <p className="text-[10px] text-gray-500 font-semibold mt-1">Selected: {fileName}</p>}
           </form>
         </div>
 
         {/* Info Form */}
-        <form onSubmit={handleUpdate} className="space-y-5">
-          <div>
-            <label className="text-xs text-gray-500 font-semibold block mb-1">Blood Bank Name</label>
-            <input 
-              type="text" 
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              disabled={!editMode}
-              className={`w-full p-3 border rounded-lg outline-none transition ${!editMode ? 'bg-gray-100 text-gray-700' : 'bg-white focus:ring-2 focus:ring-red-400'}`}
-            />
-          </div>
+        <form onSubmit={handleUpdate} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="md:col-span-2">
+              <label className="text-[11px] text-gray-600 font-bold block uppercase tracking-wider mb-1.5">Blood Bank Name</label>
+              <input 
+                type="text" 
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                disabled={!editMode}
+                className={`w-full p-3 border rounded-xl outline-none transition text-sm font-semibold ${!editMode ? 'bg-gray-100/70 text-gray-700 border-gray-200 cursor-not-allowed' : 'bg-white border-gray-350 focus:ring-2 focus:ring-red-400/20 focus:border-red-500'}`}
+              />
+            </div>
 
-          <div>
-            <label className="text-xs text-gray-500 font-semibold block mb-1">Email</label>
-            <input 
-              type="email" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={!editMode}
-              className={`w-full p-3 border rounded-lg outline-none transition ${!editMode ? 'bg-gray-100 text-gray-700' : 'bg-white focus:ring-2 focus:ring-red-400'}`}
-            />
-          </div>
+            <div>
+              <label className="text-[11px] text-gray-600 font-bold block uppercase tracking-wider mb-1.5">Email</label>
+              <input 
+                type="email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={!editMode}
+                className={`w-full p-3 border rounded-xl outline-none transition text-sm font-semibold ${!editMode ? 'bg-gray-100/70 text-gray-700 border-gray-200 cursor-not-allowed' : 'bg-white border-gray-350 focus:ring-2 focus:ring-red-400/20 focus:border-red-500'}`}
+              />
+            </div>
 
-          <div>
-            <label className="text-xs text-gray-500 font-semibold block mb-1">Address</label>
-            <input 
-              type="text" 
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              disabled={!editMode}
-              className={`w-full p-3 border rounded-lg outline-none transition ${!editMode ? 'bg-gray-100 text-gray-700' : 'bg-white focus:ring-2 focus:ring-red-400'}`}
-            />
-          </div>
+            <div>
+              <label className="text-[11px] text-gray-600 font-bold block uppercase tracking-wider mb-1.5">License Number</label>
+              <input 
+                type="text" 
+                value={licenseNumber}
+                onChange={(e) => setLicenseNumber(e.target.value)}
+                disabled={!editMode}
+                className={`w-full p-3 border rounded-xl outline-none transition text-sm font-semibold ${!editMode ? 'bg-gray-100/70 text-gray-700 border-gray-200 cursor-not-allowed' : 'bg-white border-gray-350 focus:ring-2 focus:ring-red-400/20 focus:border-red-500'}`}
+              />
+            </div>
 
-          <div>
-            <label className="text-xs text-gray-500 font-semibold block mb-1">License Number</label>
-            <input 
-              type="text" 
-              value={licenseNumber}
-              onChange={(e) => setLicenseNumber(e.target.value)}
-              disabled={!editMode}
-              className={`w-full p-3 border rounded-lg outline-none transition ${!editMode ? 'bg-gray-100 text-gray-700' : 'bg-white focus:ring-2 focus:ring-red-400'}`}
-            />
-          </div>
+            <div className="md:col-span-2">
+              <label className="text-[11px] text-gray-600 font-bold block uppercase tracking-wider mb-1.5">Address</label>
+              <input 
+                type="text" 
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                disabled={!editMode}
+                className={`w-full p-3 border rounded-xl outline-none transition text-sm font-semibold ${!editMode ? 'bg-gray-100/70 text-gray-700 border-gray-200 cursor-not-allowed' : 'bg-white border-gray-350 focus:ring-2 focus:ring-red-400/20 focus:border-red-500'}`}
+              />
+            </div>
 
-          <div>
-            <label className="text-xs text-gray-500 font-semibold block mb-1">Bank Account Number</label>
-            <input 
-              type="text" 
-              value={bankAccountNumber}
-              onChange={(e) => setBankAccountNumber(e.target.value)}
-              disabled={!editMode}
-              className={`w-full p-3 border rounded-lg outline-none transition ${!editMode ? 'bg-gray-100 text-gray-700' : 'bg-white focus:ring-2 focus:ring-red-400'}`}
-            />
-          </div>
+            <div>
+              <label className="text-[11px] text-gray-600 font-bold block uppercase tracking-wider mb-1.5">Bank Account Number</label>
+              <input 
+                type="text" 
+                value={bankAccountNumber}
+                onChange={(e) => setBankAccountNumber(e.target.value)}
+                disabled={!editMode}
+                className={`w-full p-3 border rounded-xl outline-none transition text-sm font-semibold ${!editMode ? 'bg-gray-100/70 text-gray-700 border-gray-200 cursor-not-allowed' : 'bg-white border-gray-350 focus:ring-2 focus:ring-red-400/20 focus:border-red-500'}`}
+              />
+            </div>
 
-          <div>
-            <label className="text-xs text-gray-500 font-semibold block mb-1">Bank IFSC Code</label>
-            <input 
-              type="text" 
-              value={bankIFSCCode}
-              onChange={(e) => setBankIFSCCode(e.target.value)}
-              disabled={!editMode}
-              className={`w-full p-3 border rounded-lg outline-none transition ${!editMode ? 'bg-gray-100 text-gray-700' : 'bg-white focus:ring-2 focus:ring-red-400'}`}
-            />
-          </div>
-
-          <div>
-            <label className="text-xs text-gray-500 font-semibold block mb-1">Account Status</label>
-            <div className={`mt-1 font-bold ${bloodBank.status === 'Approved' ? 'text-green-600' : (bloodBank.status === 'Rejected' ? 'text-red-600' : 'text-yellow-600')}`}>
-              {bloodBank.status || 'Verified'}
+            <div>
+              <label className="text-[11px] text-gray-600 font-bold block uppercase tracking-wider mb-1.5">Bank IFSC Code</label>
+              <input 
+                type="text" 
+                value={bankIFSCCode}
+                onChange={(e) => setBankIFSCCode(e.target.value)}
+                disabled={!editMode}
+                className={`w-full p-3 border rounded-xl outline-none transition text-sm font-semibold ${!editMode ? 'bg-gray-100/70 text-gray-700 border-gray-200 cursor-not-allowed' : 'bg-white border-gray-350 focus:ring-2 focus:ring-red-400/20 focus:border-red-500'}`}
+              />
             </div>
           </div>
 
-          <div>
-            <label className="text-xs text-gray-500 font-semibold block mb-1">Uploaded Licenses</label>
-            <div className="mt-2 text-sm bg-gray-50 p-4 rounded-lg border border-gray-200">
-              {bloodBank.licenses && bloodBank.licenses.length > 0 ? (
-                <ul className="space-y-2">
-                  {bloodBank.licenses.map((licenseUrl, idx) => (
-                    <li key={idx}>
-                      <a href={licenseUrl.startsWith('http') || licenseUrl.startsWith('data:') ? licenseUrl : `${axios.defaults.baseURL || ''}${licenseUrl.startsWith('/') ? '' : '/'}${licenseUrl}`} target="_blank" rel="noreferrer" className="text-blue-600 underline hover:text-blue-800 flex items-center gap-1">
-                        📄 License {idx + 1}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
+          <div className="pt-2">
+            <label className="text-[11px] text-gray-600 font-bold block uppercase tracking-wider mb-1.5">Account Status</label>
+            <div className="flex items-center">
+              {bloodBank.status?.toLowerCase() === 'approved' ? (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span> Approved
+                </span>
+              ) : bloodBank.status?.toLowerCase() === 'rejected' ? (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span> Rejected
+                </span>
               ) : (
-                <span className="text-gray-400">No licenses available</span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Under Review
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="pt-2">
+            <label className="text-[11px] text-gray-600 font-bold block uppercase tracking-wider mb-1.5">Uploaded Licenses</label>
+            <div className="bg-gray-100/50 p-4 rounded-2xl border border-gray-200">
+              {bloodBank.licenses && bloodBank.licenses.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {bloodBank.licenses.map((licenseUrl, idx) => (
+                    <a 
+                      key={idx}
+                      href={licenseUrl.startsWith('http') || licenseUrl.startsWith('data:') ? licenseUrl : `${axios.defaults.baseURL || ''}${licenseUrl.startsWith('/') ? '' : '/'}${licenseUrl}`} 
+                      target="_blank" 
+                      rel="noreferrer" 
+                      className="flex items-center gap-2 p-2.5 bg-white border border-gray-100 rounded-xl hover:border-red-200 hover:shadow-sm transition text-xs font-bold text-gray-700 group"
+                    >
+                      <i className="bi bi-file-earmark-pdf-fill text-red-500 text-lg"></i>
+                      <span className="truncate flex-1">License {idx + 1}</span>
+                      <i className="bi bi-box-arrow-up-right text-gray-400 group-hover:text-red-500 transition"></i>
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <span className="text-xs text-gray-500 font-semibold">No licenses available</span>
               )}
             </div>
           </div>
 
           {/* Buttons */}
-          <div className="flex justify-between mt-8 border-t pt-6">
+          <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
             {editMode ? (
               <button 
                 type="submit"
-                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition shadow font-bold"
+                className="bg-green-600 text-white px-5 py-2.5 rounded-xl hover:bg-green-700 transition shadow font-bold text-xs flex items-center gap-1.5"
               >
-                💾 Save Changes
+                <i className="bi bi-check-lg text-sm"></i> Save Changes
               </button>
             ) : (
               <div />
@@ -344,9 +372,9 @@ const BloodBankProfile = () => {
             <button 
               type="button" 
               onClick={handleDeleteAccount}
-              className="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 transition shadow font-bold"
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2.5 rounded-xl transition shadow font-bold text-xs flex items-center gap-1.5"
             >
-              Delete Account
+              <i className="bi bi-trash3-fill"></i> Delete Account
             </button>
           </div>
         </form>
